@@ -2,7 +2,7 @@ package me.retrooper.skyscript.reader;
 
 import me.retrooper.skyscript.datatypes.DataTypeHandler;
 import me.retrooper.skyscript.readers.funcs.CallingFunctionReader;
-import me.retrooper.skyscript.readers.manager.DataReaderManager;
+import me.retrooper.skyscript.readers.manager.DataReaderHelper;
 /**
  * 
  * @author Retrooper
@@ -27,15 +27,15 @@ public class CodeReader {
 		// var name = "Retrooper";
 		// var age = 14;
 		for (String line : code.split(";")) {
-			for (int i = 0; i < DataReaderManager.readers.length; i++) {
-				if (DataTypeHandler.getType(line).equals(DataReaderManager.readers[i].getType())) {
+			for (int i = 0; i < DataReaderHelper.readers.length; i++) {
+				if (DataTypeHandler.getType(line).equals(DataReaderHelper.readers[i].getType())) {
 					//PASS IN ARGUMENTS
-					if(DataReaderManager.readers[i] instanceof CallingFunctionReader) {
+					if(DataReaderHelper.readers[i] instanceof CallingFunctionReader) {
 						String[] arr = new String[] {line};
-						DataReaderManager.readers[i].handle(arr);
+						DataReaderHelper.readers[i].handle(arr);
 						continue;
 					}
-					DataReaderManager.readers[i].handle(line.trim().split(" "));
+					DataReaderHelper.readers[i].handle(line.trim().split(" "));
 				}
 			}
 		}

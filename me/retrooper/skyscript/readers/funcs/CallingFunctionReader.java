@@ -18,11 +18,12 @@ public class CallingFunctionReader extends DataReader {
 		String params = args[0].substring(args[0].indexOf("(") + 1, args[0].lastIndexOf(")"));
 
 		// SYSTEM BUILT FUNCTION CHECK!!!
-		if (name.equals("print")) {
+		if ("print".equals(name)) {
 			String result = params;
 			if (params.contains(">")) {
 				String tempStr = "";
 				boolean areAllNumeric = true;
+				boolean shouldCalculate = true;
 				for (String parts : params.split("\\>")) {
 
 					try {
@@ -41,17 +42,18 @@ public class CallingFunctionReader extends DataReader {
 						} else if (part.trim().startsWith("(") && part.trim().endsWith(")")) {
 							String spaceA = part.substring(0, part.indexOf("("));
 							String spaceB = part.substring(part.indexOf(")") + 1, part.length());
-							//ADD THE EXTRA SPACES!
+							// ADD THE EXTRA SPACES!
 							tempStr += spaceA + MathHelper.eval(part) + spaceB;
 							continue;
 						}
 						tempStr += part;
 					}
 					Runner.log(tempStr);
-					return;
+					shouldCalculate = false;
 				}
-
-				result = MathHelper.eval(params);
+				if (shouldCalculate) {
+					result = MathHelper.eval(params);
+				}
 			} else {
 				// SIMILAR AS VARIABLE READER..
 				VariableType type = VariableType.getType(params);

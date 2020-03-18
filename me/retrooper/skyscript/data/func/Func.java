@@ -9,7 +9,9 @@ public class Func {
 	public Func(String name, String code, Var[] tempVars) {
 		this.name = name;
 		this.code = code;
+		this.tempVars = tempVars;
 	}
+	
 	public String getName() {
 		return name;
 	}
