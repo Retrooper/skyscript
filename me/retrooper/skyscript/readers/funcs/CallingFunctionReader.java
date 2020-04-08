@@ -2,74 +2,66 @@ package me.retrooper.skyscript.readers.funcs;
 
 import me.retrooper.mathapi.MathHelper;
 import me.retrooper.skyscript.Runner;
+import me.retrooper.skyscript.data.vars.VarManager;
 import me.retrooper.skyscript.datatypes.DataType;
 import me.retrooper.skyscript.datatypes.var.VariableType;
 import me.retrooper.skyscript.readers.DataReader;
 
 public class CallingFunctionReader extends DataReader {
 
-	public CallingFunctionReader() {
-		super(DataType.CALL_FUNCTION);
-	}
+    public CallingFunctionReader() {
+        super(DataType.CALL_FUNCTION);
+    }
 
-	@Override
-	public void handle(String[] args) {
-		String name = args[0].substring(0, args[0].indexOf("("));
-		String params = args[0].substring(args[0].indexOf("(") + 1, args[0].lastIndexOf(")"));
+    @Override
+    public void handle(String[] args) {
+        String name = args[0].substring(0, args[0].indexOf("(")).trim();
+        String params = args[0].substring(args[0].indexOf("(") + 1, args[0].lastIndexOf(")"));
 
-		// SYSTEM BUILT FUNCTION CHECK!!!
-		if ("print".equals(name)) {
-			String result = params;
-			if (params.contains(">")) {
-				String tempStr = "";
-				boolean areAllNumeric = true;
-				boolean shouldCalculate = true;
-				for (String parts : params.split("\\>")) {
+        // SYSTEM BUILT FUNCTION CHECK!!!
+        if ("print".equals(name)) {
+            String result = "";
+            if (params.contains(">")) {
+                String tempStr = "";
+                for (String part : params.split(">")) {
+                    if (part.trim().startsWith("'") && part.trim().endsWith("'")) {
+                        part = part.substring(part.indexOf("'") + 1, part.lastIndexOf("'"));
+                    } else if (VariableType.getType(part) == VariableType.NUM) {
+                        part = MathHelper.eval(part);
+                    } else {
+                        //ITS A VARIABLE
+                        part = part.trim();
+                        part = VarManager.getVar(part).getValue() + "";
+                        if (VariableType.getType(part) == VariableType.NUM) {
+                            part = MathHelper.eval(part);
+                        }
+                    }
+                    tempStr += part;
+                }
+                result = tempStr;
+            } else {
+                // SIMILAR AS VARIABLE READER..
+                VariableType type = VariableType.getType(params);
+                if (type.equals(VariableType.STR)) {
+                    if (params.startsWith("'") && params.endsWith("'")) {
+                        params = params.substring(1, params.length() - 1);
+                    } else {
+                        //VARIABLE
+                        params = VarManager.getVar(params).getValue() + "";
+                        if (VariableType.getType(params) == VariableType.NUM) {
+                            params = MathHelper.eval(params);
+                        }
+                    }
+                } else if (type.equals(VariableType.NUM)) {
+                    params = MathHelper.eval(params); // math operations supported
+                } else {
 
-					try {
-						Double.parseDouble(parts);
-					} catch (NumberFormatException ex) {
-						areAllNumeric = false;
-					}
-					if (areAllNumeric) {
-						break;
-					}
+                }
+                result = params;
 
-					// print("Hello" > (6 + 2) > "Bye");
-					for (String part : params.split(">")) {
-						if (part.trim().startsWith("'") && part.trim().endsWith("'")) {
-							part = part.substring(part.indexOf("'") + 1, part.lastIndexOf("'"));
-						} else if (part.trim().startsWith("(") && part.trim().endsWith(")")) {
-							String spaceA = part.substring(0, part.indexOf("("));
-							String spaceB = part.substring(part.indexOf(")") + 1, part.length());
-							// ADD THE EXTRA SPACES!
-							tempStr += spaceA + MathHelper.eval(part) + spaceB;
-							continue;
-						}
-						tempStr += part;
-					}
-					Runner.log(tempStr);
-					shouldCalculate = false;
-				}
-				if (shouldCalculate) {
-					result = MathHelper.eval(params);
-				}
-			} else {
-				// SIMILAR AS VARIABLE READER..
-				VariableType type = VariableType.getType(params);
-				if (type.equals(VariableType.STR)) {
-					if (params.startsWith("\"") && params.endsWith("\"")) {
-						params = params.substring(1, params.length() - 1);
-					}
-				} else if (type.equals(VariableType.NUM)) {
-					params = MathHelper.eval(params); // math operations supported
-
-				}
-				result = params;
-
-			}
-			Runner.log(result);
-		}
-	}
+            }
+            Runner.log(result);
+        }
+    }
 
 }
