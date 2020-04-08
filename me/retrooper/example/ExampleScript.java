@@ -1,5 +1,6 @@
 package me.retrooper.example;
 
+import me.retrooper.mathapi.MathHelper;
 import me.retrooper.skyscript.Runner;
 
 public class ExampleScript {
@@ -10,11 +11,15 @@ public class ExampleScript {
 	 * 
 	 *    str name = 'Retrooper';
 	 *    num age = 14;
-	 *    print('You are called Retrooper and are ' > 4 + 4 * 3 > ' years old');
+	 *    print(name > ' is ' > age > ' years old!');
+	 *    print('This is a print message');
 	 * 
 	 */
 	public static void main(String[] args) {
-		String code = "str name = 'Retrooper'; num age = 14; print('You are called Retrooper and are ' > 4 + 4 * 3 > ' years old');";
+		String code = "str name = 'Retrooper'; str age = 'Hello'; print(name > ' is ' > age > ' years old!'); print('This is a print message');";
+		MathHelper.silentMode = true;
+		MathHelper.prepare();
+
 		Runner.execute(code);
 	}
 
