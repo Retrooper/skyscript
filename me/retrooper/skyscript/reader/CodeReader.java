@@ -17,6 +17,8 @@ public class CodeReader {
 	}
 
 	/**
+	 * This scripting language reads and instantly executes code.
+	 * There is no compilation process.
 	 * Reading the code.
 	 * Seperate each line with a semicolon ";"
 	 * Identify what type of line is found(VAR, FUNCTION, SKIP...)
@@ -24,8 +26,6 @@ public class CodeReader {
 	 * @param code
 	 */
 	public void read(String code) {
-		// var name = "Retrooper";
-		// var age = 14;
 		for (String line : code.split(";")) {
 			for (int i = 0; i < DataReaderHelper.readers.length; i++) {
 				if (DataTypeHandler.getType(line).equals(DataReaderHelper.readers[i].getType())) {
